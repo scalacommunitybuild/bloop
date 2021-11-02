@@ -18,17 +18,6 @@ bloopExportJarClassifiers in ThisBuild := Some(Set("sources"))
 /**
  * ************************************************************************************************
  */
-val benchmarkBridge = project
-  .in(file(".benchmark-bridge-compilation"))
-  .aggregate(BenchmarkBridgeCompilation)
-  .disablePlugins(ScriptedPlugin)
-  .settings(
-    releaseEarly := { () },
-    skip in publish := true,
-    bloopGenerate in Compile := None,
-    bloopGenerate in Test := None
-  )
-
 lazy val bloopShared = (project in file("shared"))
   .settings(
     name := "bloop-shared",
@@ -479,15 +468,6 @@ lazy val bloop4j = project
     )
   )
 
-lazy val benchmarks = project
-  .dependsOn(frontend % "compile->it", BenchmarkBridgeCompilation % "compile->compile")
-  .disablePlugins(ScriptedPlugin)
-  .enablePlugins(BuildInfoPlugin, JmhPlugin)
-  .settings(benchmarksSettings(frontend))
-  .settings(
-    skip in publish := true
-  )
-
 val integrations = file("integrations")
 
 def isJdiJar(file: File): Boolean = {
@@ -786,7 +766,6 @@ lazy val twitterIntegrationProjects = project
 val allProjects = Seq(
   bloopShared,
   backend,
-  benchmarks,
   frontend,
   jsonConfig210.jvm,
   jsonConfig211.jvm,
